@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -25,7 +26,7 @@ public class UserEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private long userId;
 
     private String steamId;
 
@@ -63,12 +64,12 @@ public class UserEntity {
     }
 
 
- /*   @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user")
     private List<MatchEntity> matches;
 
-    @OneToOne(mappedBy = "user")
-    private StatisticsEntity statistics;*/
-
+  /*  @OneToOne(mappedBy = "user")
+    private StatisticsEntity statistics;
+*/
 
 }
 
