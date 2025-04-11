@@ -1,4 +1,4 @@
-package com.example.playtracker.entities;
+package com.example.dotabufftracker.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -7,26 +7,47 @@ import lombok.*;
 import java.util.Date;
 import java.util.List;
 
-@Data
+import static jakarta.persistence.EnumType.*;
+
+@EqualsAndHashCode // замінити на метод в готовому проекті
+@ToString
+@Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 
 @Entity
+@Table(name = "user")
 public class UserEntity {
+
+    public enum PlayerRank{
+        NORANG,
+        HERALD,
+        GUARDIAN,
+        CRUSADER,
+        ARCHON,
+        LEGEND,
+        ANCIENT,
+        DIVINE,
+        IMMORTAL
+    }
 
     public enum Status{
         ACTIVE,
-        BLOCK
+        BLOCK,
+        CREATED,
+        DELETED
     }
 
     public enum Role{
         USER,
-        ADMIN
+        ADMIN,
+        GUEST
     }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long userId;
+    private Long userId;
 
     private String steamId;
 
@@ -39,11 +60,14 @@ public class UserEntity {
     @JsonIgnore
     private String password;
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated(STRING)
     private Status status;
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated(STRING)
     private Role role;
+
+    @Enumerated(STRING)
+    private PlayerRank playerRank;
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
@@ -56,6 +80,7 @@ public class UserEntity {
         createdAt = new Date();
         if(status == null) status = Status.ACTIVE;
         if(role == null) role = Role.USER;
+        if(playerRank == null) playerRank = PlayerRank.NORANG;
     }
 
     @PreUpdate
@@ -64,14 +89,15 @@ public class UserEntity {
     }
 
 
-    @OneToMany(mappedBy = "user")
+    @ManyToMany
+    @JoinTable(
+            name = "match_hero",
+            joinColumns = @JoinColumn(name = "hero_id"),
+            inverseJoinColumns = @JoinColumn(name = "match_id")
+    )
     private List<MatchEntity> matches;
 
-  /*  @OneToOne(mappedBy = "user")
-    private StatisticsEntity statistics;
-*/
+
 
 }
-
-
 
